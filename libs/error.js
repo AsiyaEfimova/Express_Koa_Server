@@ -1,5 +1,5 @@
 module.exports = async (ctx, next) => {
-    console.log(ctx.response);
+    // console.log(ctx.response);
 
     try {
         await next()

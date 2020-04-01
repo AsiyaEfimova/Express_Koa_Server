@@ -1,16 +1,20 @@
 const db = require('../db');
 
-module.exports.post = function (req, res) {
-    console.log(req.body)
+module.exports.post = async (ctx) => {
+    const { age, concerts, cities, years } = ctx.request.body
     const newSkill = {
-        age: req.body.age,
-        concerts: req.body.concerts,
-        cities: req.body.cities,
-        years: req.body.years
+        age: age,
+        concerts: concerts,
+        cities: cities,
+        years: years
     };
     db.get('skills')
         .push(newSkill)
         .write();
-    req.flash('skillSave', 'Skills was saved');
-    res.redirect('/admin');
+    ctx.body = {
+        mes: 'Skills was saved',
+        status: 'OK',
+    }
+    ctx.flash('skillSave', 'Skills was saved');
+    await ctx.redirect('/admin/');
 }

@@ -1,56 +1,50 @@
-const formidable = require('formidable');
 const fs = require('fs');
 const path = require('path');
 const db = require('../db');
+const config = require('../config');
 
 const validation = (fields, files) => {
-    if (files.photo.name === '' || files.photo.size === 0) {
+    if (files.name === '' || files.size === 0) {
         return { status: 'Не загружена картинка!', err: true }
     }
     if (!fields.name) {
-        return { status: 'Не указано описание картинки!', err: true }
+        return { status: 'Не указано название!', err: true }
+    }
+    if (!fields.price) {
+        return { status: 'Не указана цена!', err: true }
     }
     return { status: 'Ok', err: false }
 }
 
-module.exports.post = function (req, res) {
-    let form = new formidable.IncomingForm();
-    let upload = path.join('./public', 'upload');
-    if (!fs.existsSync(upload)) {
-        fs.mkdirSync(upload);
+module.exports.post = async (ctx) => {
+    const { name, price } = ctx.request.body;
+    const { name: photoName, path: photoPath } = ctx.request.files.photo;
+    const valid = validation(ctx.request.body, ctx.request.files.photo);
+    if (valid.err) {
+        fs.unlinkSync(photoPath)
+        ctx.flash('goodSave', `Error: ${valid.status}`);
+        return ctx.redirect('/admin');
     }
-    form.uploadDir = path.join(process.cwd(), upload);
-    form.parse(req, function (err, fields, files) {
+    const fileName = path.join(config.upload, photoName);
+    fs.rename(photoPath, fileName, function (err) {
         if (err) {
-            return next(err);
+            console.error(err.message)
+            return
         }
-        const valid = validation(fields, files);
-        if (valid.err) {
-            fs.unlinkSync(files.photo.path)
-            req.flash('goodSave', `Error: ${valid.status}`);
-            return res.redirect('/admin');
+        let startSign = fileName.indexOf('\/');
+        if (!startSign) {
+            startSign = fileName.indexOf('\\');
         }
-        const fileName = path.join(upload, files.photo.name);
-        fs.rename(files.photo.path, fileName, function (err) {
-            if (err) {
-                console.error(err.message)
-                return
-            }
-            let startSign = fileName.indexOf('\/');
-            if (!startSign) {
-                startSign = fileName.indexOf('\\');
-            }
-            let dir = fileName.substr(startSign);
-            const newGood = {
-                photo: dir,
-                name: fields.name,
-                years: fields.price
-            };
-            db.get('goods')
-                .push(newGood)
-                .write();
-            req.flash('goodSave', 'Good was saved');
-            res.redirect('/admin');
-        });
+        let dir = fileName.substr(startSign);
+        const newGood = {
+            photo: dir,
+            name: name,
+            price: price
+        };
+        db.get('goods')
+            .push(newGood)
+            .write();
+        ctx.flash('goodSave', 'Good was saved');
     });
+    await ctx.redirect('/admin');
 }

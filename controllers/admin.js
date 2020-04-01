@@ -1,5 +1,5 @@
 const db = require('../db');
 
-module.exports.get = function (req, res) {
-    res.render('pages/admin', { msgskill: req.flash('skillSave'), msgfile: req.flash('goodSave') });
+module.exports.get = async (ctx) => {
+    await ctx.render('pages/admin', { msgskill: ctx.flash('skillSave'), msgfile: ctx.flash('goodSave') });
 }

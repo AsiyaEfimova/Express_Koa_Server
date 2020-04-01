@@ -7,6 +7,8 @@ const fs = require('fs');
 const path = require('path');
 const errorHandler = require('./libs/error');
 const config = require('./config');
+var flash = require('koa-connect-flash');
+const koaBody = require('koa-body');
 
 new Pug({
     viewPath: path.resolve(__dirname, './source/template'),
@@ -16,13 +18,14 @@ new Pug({
     app: app,
 });
 
-app.use(static('./public'));
-
 const router = require('./routes');
 app
+    .use(flash())
+    .use(koaBody())
     .use(session(config.session, app))
     .use(router.routes())
     .use(router.allowedMethods())
+    .use(static('./public'))
     .use(errorHandler)
 
 const port = config.port || 3000
