@@ -1,6 +1,41 @@
 {
-  "users": [],
-  "messages": [],
-  "skills": [],
-  "goods": []
+  "users": [
+    {
+      "id": 53681889,
+      "email": "1@2.3",
+      "password": "1"
+    }
+  ],
+  "messages": [
+    {
+      "name": "admin",
+      "email": "1@2.3",
+      "message": "fgtd"
+    },
+    {
+      "name": "admin",
+      "email": "1@2.3",
+      "message": "jm"
+    }
+  ],
+  "skills": [
+    {
+      "age": "1",
+      "concerts": "1",
+      "cities": "1",
+      "years": "1"
+    }
+  ],
+  "goods": [
+    {
+      "photo": "/upload/photo.jpg",
+      "name": "admin",
+      "price": "2 000"
+    },
+    {
+      "photo": "/upload/photo.jpg",
+      "name": "admin",
+      "price": "2 000"
+    }
+  ]
 }

@@ -6,18 +6,10 @@ module.exports.get = async (ctx) => {
 
 module.exports.post = async (ctx) => {
     const { name, email, message } = ctx.request.body;
-    const newMessage = {
-        name: name,
-        email: email,
-        message: message
-    };
+    const newMessage = { name, email, message };
     db.get('messages')
         .push(newMessage)
         .write();
-    ctx.body = {
-        mes: 'Message was saved',
-        status: 'OK',
-    }
     ctx.flash('sendMail', 'Message was sended');
-    await ctx.redirect('/');
+    await ctx.redirect('/#form');
 }

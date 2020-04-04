@@ -45,6 +45,6 @@ module.exports.post = async (ctx) => {
             .push(newGood)
             .write();
         ctx.flash('goodSave', 'Good was saved');
+        ctx.redirect('/admin');
     });
-    await ctx.redirect('/admin');
 }

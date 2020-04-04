@@ -20,12 +20,12 @@ new Pug({
 
 const router = require('./routes');
 app
-    .use(flash())
+    .use(static('./public'))
     .use(koaBody())
     .use(session(config.session, app))
+    .use(flash())
     .use(router.routes())
     .use(router.allowedMethods())
-    .use(static('./public'))
     .use(errorHandler)
 
 const port = config.port || 3000
