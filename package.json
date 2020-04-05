@@ -46,6 +46,7 @@
     "koa": "^2.11.0",
     "koa-body": "^4.1.1",
     "koa-connect-flash": "^0.1.2",
+    "koa-convert": "^1.2.0",
     "koa-formidable": "^1.1.0",
     "koa-pug": "^4.0.3",
     "koa-session": "^5.13.1",

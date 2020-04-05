@@ -1,4 +1,4 @@
-const fs = require('fs');
+const fs = require('fs').promises;
 const path = require('path');
 const db = require('../db');
 const config = require('../config');
@@ -26,25 +26,24 @@ module.exports.post = async (ctx) => {
         return ctx.redirect('/admin');
     }
     const fileName = path.join(config.upload, photoName);
-    fs.rename(photoPath, fileName, function (err) {
-        if (err) {
-            console.error(err.message)
-            return
-        }
+    try {
+        await fs.rename(photoPath, fileName);
         let startSign = fileName.indexOf('\/');
         if (!startSign) {
             startSign = fileName.indexOf('\\');
         }
         let dir = fileName.substr(startSign);
         const newGood = {
-            photo: dir,
+            src: dir,
             name: name,
             price: price
         };
-        db.get('goods')
-            .push(newGood)
+        let goodsArr = db.getArray('goods');
+        goodsArr.push(newGood)
             .write();
         ctx.flash('goodSave', 'Good was saved');
-        ctx.redirect('/admin');
-    });
+    } catch (err) {
+        console.error(err.message);
+    }
+    ctx.redirect('/admin');
 }

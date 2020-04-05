@@ -1,14 +1,16 @@
 const db = require('../db');
 
 module.exports.get = async (ctx) => {
-    await ctx.render('pages/index', { msgsemail: ctx.flash('sendMail') })
+    const skills = db.getSkills() || [];
+    const goods = db.getGoods() || [];
+    await ctx.render('pages/index', { skills: skills, products: goods, msgsemail: ctx.flash('sendMail') })
 }
 
 module.exports.post = async (ctx) => {
     const { name, email, message } = ctx.request.body;
     const newMessage = { name, email, message };
-    db.get('messages')
-        .push(newMessage)
+    let messagesArr = db.getArray('messages');
+    messagesArr.push(newMessage)
         .write();
     ctx.flash('sendMail', 'Message was sended');
     await ctx.redirect('/#form');

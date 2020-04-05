@@ -13,8 +13,8 @@ module.exports.post = async (ctx) => {
         email,
         password
     };
-    db.get('users')
-        .push(newUser)
+    let usersArr = db.getArray('users');
+    usersArr.push(newUser)
         .write();
     ctx.flash('loginSave', 'Login was saved');
     await ctx.redirect('/login');

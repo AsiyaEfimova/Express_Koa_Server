@@ -7,6 +7,7 @@ const fs = require('fs');
 const path = require('path');
 const errorHandler = require('./libs/error');
 const config = require('./config');
+const convert = require('koa-convert');
 var flash = require('koa-connect-flash');
 const koaBody = require('koa-body');
 
@@ -20,11 +21,11 @@ new Pug({
 
 const router = require('./routes');
 app
-    .use(static('./public'))
     .use(koaBody())
     .use(session(config.session, app))
-    .use(flash())
+    .use(convert(flash()))
     .use(router.routes())
+    .use(static('./public'))
     .use(router.allowedMethods())
     .use(errorHandler)
 
