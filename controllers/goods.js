@@ -10,6 +10,9 @@ const validation = (fields, files) => {
     if (!fields.name) {
         return { status: 'Не указано описание картинки!', err: true }
     }
+    if (!fields.price) {
+        return { status: 'Не указана цена!', err: true }
+    }
     return { status: 'Ok', err: false }
 }
 
@@ -42,12 +45,12 @@ module.exports.post = function (req, res) {
             }
             let dir = fileName.substr(startSign);
             const newGood = {
-                photo: dir,
+                src: dir,
                 name: fields.name,
-                years: fields.price
+                price: fields.price
             };
-            db.get('goods')
-                .push(newGood)
+            let goodsArr = db.getArray('goods');
+            goodsArr.push(newGood)
                 .write();
             req.flash('goodSave', 'Good was saved');
             res.redirect('/admin');

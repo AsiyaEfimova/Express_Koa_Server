@@ -8,14 +8,15 @@ module.exports.get = function (req, res) {
 
 module.exports.post = function (req, res) {
     console.log(req.body)
+    const { email, password } = req.body;
     const newUser = {
         id: random(),
-        email: req.body.email,
-        password: req.body.password
+        email,
+        password
     };
-    db.get('users')
-        .push(newUser)
+    let usersArr = db.getArray('users');
+    usersArr.push(newUser)
         .write();
     req.flash('loginSave', 'Login was saved');
-    res.redirect('/login/');
+    res.redirect('/login');
 }
